@@ -296,6 +296,21 @@
 	};
 };
 
+/*
+ * The Plus has a single (left) stick. Only read the left_x and left_y
+ * mux channels so the unpopulated right-stick channels don't report noise.
+ */
+&{/adc-joystick} {
+	io-channels = <&adc_mux 0>, <&adc_mux 2>;
+
+	/delete-node/ axis@2;
+	/delete-node/ axis@3;
+
+	axis@1 {
+		linux,code = <ABS_Y>;
+	};
+};
+
 &cpu0 {
 	cpu-supply = <&vdd_cpu>;
 };
@@ -986,15 +1001,9 @@
 	status = "okay";
 };
 
+/* The Plus has no eMMC (unlike the RG DS); the stock DTB enables it anyway. */
 &sdhci {
-	bus-width = <8>;
-	max-frequency = <200000000>;
-	no-sd;
-	no-sdio;
-	non-removable;
-	pinctrl-0 = <&emmc_bus8 &emmc_clk &emmc_cmd &emmc_datastrobe &emmc_rstnout>;
-	pinctrl-names = "default";
-	status = "okay";
+	status = "disabled";
 };
 
 &sdmmc0 {
